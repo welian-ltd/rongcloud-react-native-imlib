@@ -2,6 +2,9 @@ package cn.rongcloud.imlib.react;
 
 import android.net.Uri;
 import com.facebook.react.bridge.*;
+
+import cn.rongcloud.imlib.react.customize.CustomizeMessage;
+import cn.rongcloud.imlib.react.customize.TestMessage;
 import io.rong.imlib.CustomServiceConfig;
 import io.rong.imlib.model.*;
 import io.rong.imlib.model.Conversation.ConversationType;
@@ -179,6 +182,17 @@ class Convert {
                 map.putString("typingContentType", message.getTypingContentType());
                 break;
             }
+
+            case "WL:Test":
+              TestMessage test = (TestMessage) content;
+              map.putString("content", test.getContent());
+              map.putString("extra", test.getExtra());
+              break;
+
+            case "WL:Message":
+              CustomizeMessage cm = (CustomizeMessage) content;
+              map.putString("content", cm.toString());
+              break;
         }
         return map;
     }
@@ -421,6 +435,17 @@ class Convert {
                     break;
                 case "RC:ReadNtf":
                     messageContent = ReadReceiptMessage.obtain((long) map.getDouble("sentTime"));
+                    break;
+
+                case "WL:Message":
+                    messageContent = CustomizeMessage.obtain(map.getString("content"));
+                    break;
+
+                case "WL:Test":
+                    messageContent = TestMessage.obtain(map.getString("content"));
+                    if (map.hasKey("extra")) {
+                      ((TestMessage) messageContent).setExtra(map.getString("extra"));
+                    }
                     break;
             }
         }

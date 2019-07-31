@@ -2,6 +2,10 @@ package cn.rongcloud.imlib.react;
 
 import com.facebook.react.bridge.*;
 import com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEmitter;
+
+import cn.rongcloud.imlib.react.customize.CustomizeMessage;
+import cn.rongcloud.imlib.react.customize.TestMessage;
+import io.rong.imlib.AnnotationNotFoundException;
 import io.rong.imlib.CustomServiceConfig;
 import io.rong.imlib.CustomServiceConfig.CSEvaSolveStatus;
 import io.rong.imlib.ICustomServiceListener;
@@ -137,6 +141,14 @@ public class RCIMClientModule extends ReactContextBaseJavaModule {
         eventEmitter = reactContext.getJSModule(RCTDeviceEventEmitter.class);
         RCPushReceiver.eventEmitter = eventEmitter;
         RongIMClient.init(reactContext, key);
+
+        //注册自定义消息
+        try {
+          RongIMClient.registerMessageType(CustomizeMessage.class);
+          RongIMClient.registerMessageType(TestMessage.class);
+        } catch (AnnotationNotFoundException e) {
+          e.printStackTrace();
+        }
     }
 
     @ReactMethod
